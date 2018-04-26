@@ -3,6 +3,11 @@
   Allows for 4 breakbeam sensors to be connected to digital pins 4 to 7.
   Output is [sensor_number]:[value]
   
+  Return sensor value = {s:4:1} or {s:4:0}
+  meaning: 
+  type = (s)sensor
+  name = 4
+  value =1 (true/open) or 0 (false/closed)
 */
 
 #define LEDPIN 13
@@ -15,6 +20,8 @@
 #define SENSOR_6_PIN 6
 #define SENSOR_5_PIN 5
 #define SENSOR_4_PIN 4
+
+const char identity[] = "{i:Led gate 1.0}";
 
 // variables wont change
 const long led_interval = 200; // led blink duration [ms]
@@ -34,7 +41,7 @@ void setup() {
     ;
   }
   
-  Serial.println("type: Ledgate sensor");
+  send_identity();
   // initialize the LED pin as an output:
   pinMode(LEDPIN, OUTPUT);
   // initialize the sensor pins as an input:
@@ -47,12 +54,11 @@ void setup() {
   digitalWrite(SENSOR_6_PIN, HIGH); // turn on the pullup
   digitalWrite(SENSOR_5_PIN, HIGH); // turn on the pullup
   digitalWrite(SENSOR_4_PIN, HIGH); // turn on the pullup
-
-  
 }
 
-void id(){
-  serial.println('ledgate')
+
+void send_identity(){
+  Serial.println(identity);
 }
 
 void enable_led() {
@@ -72,10 +78,11 @@ void check_led() {
 }
 
 void state_changed(String pin_name, String pin_value) {
+  Serial.print("{s:");
   Serial.print(pin_name);
   Serial.print(":");
   Serial.print(pin_value);
-  Serial.print("\n");
+  Serial.print("}\n");
   enable_led();
 }
 

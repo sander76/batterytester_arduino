@@ -20,7 +20,6 @@ void loop()
     read_incoming();
 }
 
-int bytes_read = 0;
 
 void read_incoming()
 {
