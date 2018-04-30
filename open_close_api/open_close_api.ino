@@ -1,7 +1,7 @@
 #include <arduino.h>
 #include <Incoming.h>
 
-const char identity[] = "{i:Relay actor 1.0}";
+const char identity[] = "Relay actor 1.0";
 
 Incoming incoming;
 char received_char = -1;
@@ -35,7 +35,9 @@ void setup()
 }
 
 void send_identity(){
-  Serial.println(identity);
+  Serial.print("{i:");
+  Serial.print(identity);
+  Serial.println("}");
 }
 
 int parse_int(char value)

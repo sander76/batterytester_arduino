@@ -10,6 +10,9 @@
   value =1 (true/open) or 0 (false/closed)
 */
 
+#include <arduino.h>
+#include <Incoming.h>
+
 #define LEDPIN 13
 // Pin 13: Arduino has an LED connected on pin 13
 // Pin 11: Teensy 2.0 has the LED on pin 11
@@ -21,7 +24,7 @@
 #define SENSOR_5_PIN 5
 #define SENSOR_4_PIN 4
 
-const char identity[] = "{i:Led gate 1.0}";
+const char identity[] = "Led gate 1.0";
 
 // variables wont change
 const long led_interval = 200; // led blink duration [ms]
@@ -58,7 +61,9 @@ void setup() {
 
 
 void send_identity(){
-  Serial.println(identity);
+  Serial.print("{i:");
+  Serial.print(identity);
+  Serial.println("}");
 }
 
 void enable_led() {
