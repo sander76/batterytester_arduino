@@ -1,6 +1,10 @@
 #include "Arduino.h"
 #include "Incoming.h"
 
+// Incoming data is in form of a {a:1:2:3:4}
+// "a" is the actual command
+// the rest are optional parameters accompanied with that command.
+
 Incoming::Incoming()
 {
     char command = -1;

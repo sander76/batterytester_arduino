@@ -64,7 +64,7 @@ int get_pin_index(int pin_nr)
 
 void activate()
 {
-  int pin_idx = parse_int(incoming.parameter1);
+  int pin_idx = get_pin_index(parse_int(incoming.parameter1));
   unsigned long int duration = 1000 * (parse_int(incoming.parameter2));
   Serial.print("Activate: ");
   Serial.println(pin_idx);
@@ -76,21 +76,7 @@ void activate()
   start_times[pin_idx] = millis();
 }
 
-void parse_string()
-{
-  switch (incoming.command)
-  {
-  case 'a': // Activate command
-    //
-    //unsigned long duration = (parse_int(incoming.parameter2));
-    activate();
 
-    break;
-  case 'i': // Return version info.
-    send_identity();
-    break;
-  }
-}
 
 void turnoff(int pin_index)
 {
@@ -121,6 +107,22 @@ void loop()
 
 bool command_finished = false;
 
+void parse_string()
+{
+  switch (incoming.command)
+  {
+  case 'a': // Activate command
+    //
+    //unsigned long duration = (parse_int(incoming.parameter2));
+    activate();
+
+    break;
+  case 'i': // Return version info.
+    send_identity();
+    break;
+  }
+}
+
 void read_incoming()
 {
   received_char = Serial.read();
@@ -132,12 +134,12 @@ void read_incoming()
     if (command_finished)
     {
 
-      Serial.println("command ready");
-      Serial.println(incoming.command);
-      Serial.println(incoming.parameter1);
-      Serial.println(incoming.parameter2);
-      Serial.println(incoming.parameter3);
-      Serial.println(incoming.parameter4);
+      // Serial.println("command ready");
+      // Serial.println(incoming.command);
+      // Serial.println(incoming.parameter1);
+      // Serial.println(incoming.parameter2);
+      // Serial.println(incoming.parameter3);
+      // Serial.println(incoming.parameter4);
       parse_string();
     }
   }

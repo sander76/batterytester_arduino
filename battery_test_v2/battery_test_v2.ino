@@ -1,5 +1,14 @@
 #include <Wire.h>
 #include <Adafruit_INA219.h>
+
+// Change outgoing to the new protocol.
+// {s:v:2.34:a:0.33}
+// s: sensor identifier
+// v: voltage
+// <float> voltage value
+// a: amps
+// <float> amps value.
+
 Adafruit_INA219 ina219;
 
 unsigned long PREVMILLIS = 0;

@@ -38,6 +38,10 @@ int sensor_7_state = 0, last_7_state = 0;
 int led_state = LOW;
 unsigned long previousMillis = 0;
 
+Incoming incoming;
+char received_char = -1;
+bool command_finished = false;
+
 void setup() {
   Serial.begin(115200);
   while(!Serial){
@@ -110,4 +114,37 @@ void loop() {
   last_6_state = check_pin("6", digitalRead(SENSOR_6_PIN), last_6_state);
   last_7_state = check_pin("7", digitalRead(SENSOR_7_PIN), last_7_state);
   check_led();
+  read_incoming();
+}
+
+void parse_string()
+{
+  switch (incoming.command)
+  {
+  case 'i': // Return version info.
+    send_identity();
+    break;
+  }
+}
+
+void read_incoming()
+{
+  received_char = Serial.read();
+  if (received_char > -1)
+  {
+    Serial.print("incoming: ");
+    Serial.println(received_char);
+    command_finished = incoming.update(received_char);
+    if (command_finished)
+    {
+
+      // Serial.println("command ready");
+      // Serial.println(incoming.command);
+      // Serial.println(incoming.parameter1);
+      // Serial.println(incoming.parameter2);
+      // Serial.println(incoming.parameter3);
+      // Serial.println(incoming.parameter4);
+      parse_string();
+    }
+  }
 }
