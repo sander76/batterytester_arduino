@@ -12,8 +12,8 @@
 
 #include <arduino.h>
 #include <Incoming.h>
+#include <helpers.h>
 
-#define LEDPIN 13
 // Pin 13: Arduino has an LED connected on pin 13
 // Pin 11: Teensy 2.0 has the LED on pin 11
 // Pin  6: Teensy++ 2.0 has the LED on pin 6
@@ -24,7 +24,8 @@
 #define SENSOR_5_PIN 5
 #define SENSOR_4_PIN 4
 
-const char identity[] = "Led gate 1.0";
+const char identity[] = "Led_gate";
+const char version_nr[] = "1.0";
 
 // variables wont change
 const long led_interval = 200; // led blink duration [ms]
@@ -43,14 +44,10 @@ char received_char = -1;
 bool command_finished = false;
 
 void setup() {
-  Serial.begin(115200);
-  while(!Serial){
-    ;
-  }
+  pinMode(LED_BUILTIN,OUTPUT);
+  //Blink(LED_BUILTIN,led_gate);
+
   
-  send_identity();
-  // initialize the LED pin as an output:
-  pinMode(LEDPIN, OUTPUT);
   // initialize the sensor pins as an input:
   pinMode(SENSOR_7_PIN, INPUT);
   pinMode(SENSOR_6_PIN, INPUT);
@@ -61,19 +58,30 @@ void setup() {
   digitalWrite(SENSOR_6_PIN, HIGH); // turn on the pullup
   digitalWrite(SENSOR_5_PIN, HIGH); // turn on the pullup
   digitalWrite(SENSOR_4_PIN, HIGH); // turn on the pullup
+  
+  Serial.begin(115200);
+  while(!Serial){
+    ;
+  }
+  
+  send_identity(identity,version_nr);
+  // initialize the LED pin as an output:
+  
 }
 
 
-void send_identity(){
-  Serial.print("{i:");
-  Serial.print(identity);
-  Serial.println("}");
-}
+// void send_identity(){
+//   Serial.print("{i:n:");
+//   Serial.print(identity);
+//   Serial.print(":v:");
+//   Serial.print(version_nr)
+//   Serial.println("}");
+// }
 
 void enable_led() {
   previousMillis = millis();
   led_state = HIGH;
-  digitalWrite(LEDPIN, led_state);
+  digitalWrite(LED_BUILTIN, led_state);
 }
 
 void check_led() {
@@ -81,7 +89,7 @@ void check_led() {
     unsigned long currentMillis = millis();
     if (currentMillis - previousMillis >= led_interval) {
       led_state = LOW;
-      digitalWrite(LEDPIN, led_state);
+      digitalWrite(LED_BUILTIN, led_state);
     }
   }
 }
@@ -122,7 +130,7 @@ void parse_string()
   switch (incoming.command)
   {
   case 'i': // Return version info.
-    send_identity();
+    send_identity(identity,version_nr);
     break;
   }
 }
@@ -132,18 +140,9 @@ void read_incoming()
   received_char = Serial.read();
   if (received_char > -1)
   {
-    Serial.print("incoming: ");
-    Serial.println(received_char);
     command_finished = incoming.update(received_char);
     if (command_finished)
     {
-
-      // Serial.println("command ready");
-      // Serial.println(incoming.command);
-      // Serial.println(incoming.parameter1);
-      // Serial.println(incoming.parameter2);
-      // Serial.println(incoming.parameter3);
-      // Serial.println(incoming.parameter4);
       parse_string();
     }
   }

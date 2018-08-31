@@ -1,7 +1,9 @@
 #include <arduino.h>
 #include <Incoming.h>
+#include <helpers.h>
 
-const char identity[] = "Relay actor 1.0";
+const char identity[] = "Relay_actor";
+const char version_nr[] = "1.0";
 
 Incoming incoming;
 char received_char = -1;
@@ -15,15 +17,14 @@ const int out_pins[nr_of_pins] = {4, 5, 6, 7};        // Pin numbers.
 unsigned long durations[nr_of_pins] = {0, 0, 0, 0};   // Durations of each pin.
 unsigned long start_times[nr_of_pins] = {0, 0, 0, 0}; // Start times of each pin.
 
-const int relay_on = LOW;   // For the relay to switch on it needs LOW in.
-const int relay_off = HIGH; // For relay to switch off it nees HIGH in.
+const int relay_on = HIGH;   // For the relay to switch on it needs LOW in.
+const int relay_off = LOW; // For relay to switch off it nees HIGH in.
 
 void setup()
 {
+  pinMode(LED_BUILTIN,OUTPUT);
+  // Blink(LED_BUILTIN,relay_switch);
 
-  Serial.begin(115200);
-  while (!Serial)
-    ;
   for (int i = 0; i < nr_of_pins; i++)
   {
     //Serial.print("Configuring pin: ");
@@ -32,13 +33,13 @@ void setup()
     pinMode(out_pins[i], OUTPUT);
     digitalWrite(out_pins[i], relay_off);
   }
+
+  Serial.begin(115200);
+  while (!Serial)
+    ;
+  send_identity(identity,version_nr);
 }
 
-void send_identity(){
-  Serial.print("{i:");
-  Serial.print(identity);
-  Serial.println("}");
-}
 
 int parse_int(char value)
 {
@@ -118,7 +119,7 @@ void parse_string()
 
     break;
   case 'i': // Return version info.
-    send_identity();
+    send_identity(identity,version_nr);
     break;
   }
 }
@@ -128,18 +129,9 @@ void read_incoming()
   received_char = Serial.read();
   if (received_char > -1)
   {
-    Serial.print("incoming: ");
-    Serial.println(received_char);
     command_finished = incoming.update(received_char);
     if (command_finished)
     {
-
-      // Serial.println("command ready");
-      // Serial.println(incoming.command);
-      // Serial.println(incoming.parameter1);
-      // Serial.println(incoming.parameter2);
-      // Serial.println(incoming.parameter3);
-      // Serial.println(incoming.parameter4);
       parse_string();
     }
   }

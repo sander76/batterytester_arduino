@@ -1,10 +1,18 @@
 #include <arduino.h>
-#include <Incoming.h>
+
+// #include "C:/Users/sander/Dropbox/data/aptana/batterytester_arduino/incoming/Incoming.h"
+#include "../libs/incoming/incoming.h"
+
+#include "identity/id.h"
+
+
 
 Incoming incoming;
 bool command_ready = false;
 
 char _char = -1;
+
+
 
 const long interval = 1000; //interval between sensor commands sent.
 unsigned long previous_millis=0;
@@ -15,6 +23,8 @@ void setup()
     {
         ;
     }
+    Serial.println(led_gate.name);
+    
 }
 
 void loop()
