@@ -1,9 +1,11 @@
+// This switches a relays on/off for a defined amount of time.
+
 #include <arduino.h>
 #include <Incoming.h>
 #include <helpers.h>
 
 const char identity[] = "Relay_actor";
-const char version_nr[] = "1.0";
+const char version_nr[] = "1.1";
 
 Incoming incoming;
 char received_char = -1;
@@ -17,12 +19,12 @@ const int out_pins[nr_of_pins] = {4, 5, 6, 7};        // Pin numbers.
 unsigned long durations[nr_of_pins] = {0, 0, 0, 0};   // Durations of each pin.
 unsigned long start_times[nr_of_pins] = {0, 0, 0, 0}; // Start times of each pin.
 
-const int relay_on = HIGH;   // For the relay to switch on it needs LOW in.
+const int relay_on = HIGH; // For the relay to switch on it needs LOW in.
 const int relay_off = LOW; // For relay to switch off it nees HIGH in.
 
 void setup()
 {
-  pinMode(LED_BUILTIN,OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   // Blink(LED_BUILTIN,relay_switch);
 
   for (int i = 0; i < nr_of_pins; i++)
@@ -37,16 +39,16 @@ void setup()
   Serial.begin(115200);
   while (!Serial)
     ;
-  send_identity(identity,version_nr);
+  send_identity(identity, version_nr);
 }
 
-
-int parse_int(char value)
+int parse_int(char value[])
 {
   // Convert slice of array [start_idx:_length] to int.
-  char digits[] = {value, 0};
+  //char digits[] = {value, 0};
 
-  int val = atoi(digits);
+  int val = atoi(value);
+  //Serial.println(val);
   return val;
 }
 
@@ -76,8 +78,6 @@ void activate()
   durations[pin_idx] = duration;
   start_times[pin_idx] = millis();
 }
-
-
 
 void turnoff(int pin_index)
 {
@@ -119,7 +119,7 @@ void parse_string()
 
     break;
   case 'i': // Return version info.
-    send_identity(identity,version_nr);
+    send_identity(identity, version_nr);
     break;
   }
 }

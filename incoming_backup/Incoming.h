@@ -13,10 +13,10 @@ class Incoming
         
         boolean update(char character);
         char command;
-        char parameter1;
-        char parameter2;
-        char parameter3;
-        char parameter4;
+        char parameter1[2];
+        char parameter2[2];
+        char parameter3[2];
+        char parameter4[2];
     private:
         int _incoming_state;
 };

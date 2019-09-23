@@ -19,7 +19,7 @@ Adafruit_INA219 ina219;
 unsigned long PREVMILLIS = 0;
 unsigned long MILLISDIF = 0;
 const int SLOWINTERVAL = 60000;
-const int FASTINTERVAL = 1000;
+const int FASTINTERVAL = 500;
 int INTERVAL = FASTINTERVAL;
 
 
@@ -29,7 +29,7 @@ int volt_speed = 0;
 Incoming incoming;
 
 const char identity[] = "Volts_Amps_sensor";
-const char version_nr[] = "1.0";
+const char version_nr[] = "1.1";
 
 
 void setup() {

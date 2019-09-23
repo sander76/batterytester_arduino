@@ -8,15 +8,17 @@
 Incoming::Incoming()
 {
     char command = -1;
-    char parameter1 = -1;
-    char parameter2 = -1;
-    char parameter3 = -1;
-    char parameter4 = -1;
-    int _incoming_state=0;
+    char parameter1[2];
+    char parameter2[2];
+    char parameter3[2];
+    char parameter4[2];
+    int _incoming_state = 0;
+    int _val_index = 0;
 }
 
 boolean Incoming::update(char character)
 {
+    Serial.println(character);
     if (character == '}')
     {
         //Serial.println("end of command received.");
@@ -32,12 +34,14 @@ boolean Incoming::update(char character)
         case 0: //reset
             // Serial.println("state = 0");
             command = -1;
-            parameter1 = -1;
-            parameter2 = -1;
-            parameter3 = -1;
+            parameter1[2];
+            parameter2[2];
+            parameter3[2];
+            parameter4[2];
             if (character == '{')
             {
                 _incoming_state = 1;
+                _val_index = 0;
             }
             break;
 
@@ -46,6 +50,7 @@ boolean Incoming::update(char character)
             if (character == ':')
             {
                 _incoming_state = 2;
+                _val_index = 0;
             }
             else
             {
@@ -58,10 +63,17 @@ boolean Incoming::update(char character)
             if (character == ':')
             {
                 _incoming_state = 3;
+                _val_index = 0;
             }
             else
             {
-                parameter1 = character;
+                if (_val_index > 0)
+                {
+                    parameter1[_val_index] = parameter1[_val_index - 1];
+                }
+
+                parameter1[_val_index] = character;
+                _val_index += 1;
             }
             break;
 
@@ -69,15 +81,18 @@ boolean Incoming::update(char character)
             if (character == ':')
             {
                 _incoming_state = 4;
+                _val_index = 0;
             }
             else
             {
-                parameter2 = character;
+                parameter2[_val_index] = character;
+                _val_index += 1;
             }
             break;
 
         case 4: //collect parameter 3
-            parameter3 = character;
+            parameter3[_val_index] = character;
+            _val_index += 1;
             break;
         }
         // return false to indicate parsing is not ready.
