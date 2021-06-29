@@ -81,6 +81,8 @@ void activate()
 
 void turnoff(int pin_index)
 {
+  Serial.print("Deactivate: ");
+  Serial.println(pin_index);
   digitalWrite(out_pins[pin_index], relay_off);
   durations[pin_index] = 0;
 }
